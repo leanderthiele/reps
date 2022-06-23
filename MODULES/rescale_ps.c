@@ -6,6 +6,12 @@
 #include <malloc.h>
 #include <unistd.h>
 
+/* FIXME LFT
+ * 
+ * To account for current CLASS, renamed
+ * power_norm_*_*.dat to power_norm_00_*_*.dat
+ */
+
 #include "include_extern.h"
 extern void create_boltzmann_ini_file (char dir_chain[]);
 extern void fscanf_error(int n);
@@ -189,7 +195,8 @@ void rescale_class_ps(int knum, double *k)
   mode = 0;
 
   int n=0;
-  sprintf(command,"%s/PK_TABS/power_norm_z1_pk.dat",dir_chain);
+  /* LFT changed */
+  sprintf(command,"%s/PK_TABS/power_norm_00_z1_pk.dat",dir_chain);
   n = count_lines(command);
   if ((n)!=knum)
   {

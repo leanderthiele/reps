@@ -6,6 +6,13 @@
 #include <malloc.h>
 #include <unistd.h>
 
+/* FIXME LFT
+ * renamed power_z* to power_00_z* because these files do exist, not sure
+ * if this is correct (it looks like it)
+ *
+ * renamed power_zin_*.dat to power_zin_00_*.dat
+ */
+
 /******************************************************************************/
 /*    INITIAL SETTINGS - GLOBAL VARIABLES                                     */
 /******************************************************************************/
@@ -92,7 +99,8 @@ void BC()
   char powfile[200];
   char tfile[200];
 
-  sprintf(powfile,"BOUNDARY_CONDITIONS_MODULE/tabs/power_z1_pk.dat");
+  /* LFT changed */
+  sprintf(powfile,"BOUNDARY_CONDITIONS_MODULE/tabs/power_00_z1_pk.dat");
 
   int knum = count_lines(powfile);
   int header_lines = count_header_lines(powfile);
@@ -107,8 +115,9 @@ void BC()
 
   for (i=0; i<bc_nstep; i++)
   {
-    sprintf(powfile,"BOUNDARY_CONDITIONS_MODULE/tabs/power_z%i_pk.dat",i+1);
-    sprintf(tfile,"BOUNDARY_CONDITIONS_MODULE/tabs/power_z%i_tk.dat",i+1);
+    /* LFT changed */
+    sprintf(powfile,"BOUNDARY_CONDITIONS_MODULE/tabs/power_00_z%i_pk.dat",i+1);
+    sprintf(tfile,"BOUNDARY_CONDITIONS_MODULE/tabs/power_00_z%i_tk.dat",i+1);
     read_ith_pk(bc_zz[i],knum,Pb[i],Pc[i],Pn[i],powfile,tfile);
   }
 
@@ -154,7 +163,8 @@ void BC()
   system(command);
 
   double PPb[knum],PPc[knum],PPn[knum];
-  read_ith_pk(99., knum, PPb, PPc, PPn, "./BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_pk.dat", "./BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_tk.dat");
+  /* LFT changed */
+  read_ith_pk(99., knum, PPb, PPc, PPn, "./BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_00_pk.dat", "./BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_00_tk.dat");
 
   double beta_b[knum];
   double beta_n[knum];

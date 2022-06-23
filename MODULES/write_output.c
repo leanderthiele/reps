@@ -6,6 +6,11 @@
 #include <malloc.h>
 #include <unistd.h>
 
+/* FIXME LFT
+ * for current CLASS, changed
+ * power_norm_z1_pk.dat -> power_norm_00_z1_pk.dat
+ */
+
 #include "include_global.h"
 #include "background.h"
 #include "boltzmann_solver.h"
@@ -571,7 +576,8 @@ void retrieve_Pm_z0(int knum,double *ktrue, double *k, double *P)
     mode = 0;
 
     char filename[500];
-    sprintf(filename,"%s/PK_TABS/power_norm_z1_pk.dat",dir_chain);
+    /* LFT changed */
+    sprintf(filename,"%s/PK_TABS/power_norm_00_z1_pk.dat",dir_chain);
     read_power_spectrum(filename,knum,k,P);
   }
   else

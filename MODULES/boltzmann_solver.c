@@ -503,6 +503,9 @@ void create_boltzmann_ini_file (char dir_chain[])
         fprintf(out,"%.4lf, %.4lf\n",0.,z_initial);
       }
 
+      /* FIXME LFT
+       * changed bias -> selection_bias because CLASS fails otherwise
+       */
       fprintf(out,
       "                        \n"
       "selection=gaussian                    \n"
@@ -512,7 +515,7 @@ void create_boltzmann_ini_file (char dir_chain[])
       "                        \n"
       "dNdz_selection =                    \n"
       "dNdz_evolution =                    \n"
-      "bias = 1.                       \n"
+      "selection_bias = 1.                       \n"
       "                        \n");
 
       if (mode==0) fprintf(out,"root = %s/PK_TABS/power_\n",dir_chain);
@@ -520,6 +523,10 @@ void create_boltzmann_ini_file (char dir_chain[])
       if (mode==2) fprintf(out,"root = %s/BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_\n",dir_chain);
       if (mode==3) fprintf(out,"root = %s/PK_TABS/power_norm_\n",dir_chain);
 
+      /* FIXME LFT
+       * changed identifiers here to work with new CLASS,
+       * especially spectra->fourier so we get sigma8 printed
+       */
       fprintf(out,
       "headers = no                      \n"
       "format = class                      \n"
@@ -536,9 +543,10 @@ void create_boltzmann_ini_file (char dir_chain[])
       "perturbations_verbose = 1                   \n"
       "transfer_verbose = 1                    \n"
       "primordial_verbose = 1                    \n"
-      "spectra_verbose = 1                     \n"
-      "nonlinear_verbose = 1                     \n"
+      "harmonic_verbose = 1                    \n"
+      "fourier_verbose = 1                     \n"
       "lensing_verbose = 1                     \n"
+      "distortions_verbose = 1                 \n"
       "output_verbose = 1                    \n");
       fclose(out);
     }

@@ -333,6 +333,9 @@ void read_parameter_file(char parfile[])
   if(read_string_from_file(parfile,"boltzmann_code",boltzmann_code)!=1) read_err("boltzmann_code");
   if(read_string_from_file(parfile,"boltzmann_folder",boltzmann_folder)!=1) read_err("boltzmann_folder");
 
+  /* LFT added this */
+  if(read_string_from_file(parfile,"workdir",workdir)!=1) read_err("workdir");
+
   if(read_double_from_file(parfile,"z_initial",&z_initial)!=1) read_err("z_initial");
   if(read_double_from_file(parfile,"z_final",&z_final)!=1) read_err("z_final");
   if(read_double_from_file(parfile,"h",&h)!=1) read_err("h");

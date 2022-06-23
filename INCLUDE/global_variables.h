@@ -11,6 +11,9 @@ int k_per_logint_camb;
 char class_precision_file[500];
 char class_base_par_file[500];
 
+/* LFT added -- this is where all the files go */
+char workdir[512];
+
 int wrong_nu = 0;
 int wrong_ic = 0;
 char print_hubble;
