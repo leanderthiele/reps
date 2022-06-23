@@ -13,7 +13,7 @@
  */
 
 #include "include_extern.h"
-extern void create_boltzmann_ini_file (char dir_chain[]);
+extern void create_boltzmann_ini_file (void);
 extern void fscanf_error(int n);
 extern double *allocate_double_vec(int n_elems);
 extern int count_lines(char file[]);
@@ -37,31 +37,24 @@ void rescale_camb_ps(int knum, double *k)
 {
   printf("\nRescaling of the PS requested.\n");
 
-  char dir_chain[1000];
-  if (getcwd(dir_chain,sizeof(dir_chain))==NULL)
-  {
-    printf("\nError retrieving current directory path.\n");
-    exit(1);
-  }
-
-  create_boltzmann_ini_file(dir_chain);
+  create_boltzmann_ini_file();
 
   printf("\nCalling camb and generating the P(K) and T(k) at the \n"
          "requested output redshifts.\n");
-  char command[200];
-  sprintf(command,"%scamb %s/PK_TABS/power.ini > boltzmann.log",boltzmann_folder,dir_chain);
+  char command[512];
+  sprintf(command,"%scamb %s/PK_TABS/power.ini > %s/boltzmann.log",boltzmann_folder,workdir,workdir);
   system(command);
 
   // power spectra at z=0,99 used for normalization
   mode = 3;
-  create_boltzmann_ini_file(dir_chain);
+  create_boltzmann_ini_file();
 
-  sprintf(command,"%scamb %s/PK_TABS/power_norm.ini > boltzmann.log",boltzmann_folder,dir_chain);
+  sprintf(command,"%scamb %s/PK_TABS/power_norm.ini > %s/boltzmann.log",boltzmann_folder,workdir,workdir);
   system(command);
   mode = 0;
 
   int n=0;
-  sprintf(command,"%s/PK_TABS/power_norm_z1_pk.dat",dir_chain);
+  sprintf(command,"%s/PK_TABS/power_norm_z1_pk.dat",workdir);
   n = count_lines(command);
   if ((n-1)!=knum)
   {
@@ -108,16 +101,16 @@ void rescale_camb_ps(int knum, double *k)
   fclose(spectrumz0);
 
   int index_out=0;
-  char outfile[200];
-  char Dfile[200];
+  char outfile[512];
+  char Dfile[512];
   printf("\n");
   for(index_out=0; index_out<output_number; index_out++)
   {
-    sprintf(Dfile,"%s_znum%i.txt",outputfile,index_out);
+    sprintf(Dfile,"%s/znum%i.txt",workdir,index_out);
     read_D(Dfile,knum,Db,Dc,Dn,Dm);
 
-    sprintf(outfile,"%s/PK_TABS/Pb_%s_rescaled_norm00_znum%i.txt",dir_chain,outputfile,index_out);
-    printf("Written file PK_TABS/Pb_%s_rescaled_norm00_znum%i.txt\n",outputfile,index_out);
+    sprintf(outfile,"%s/PK_TABS/Pb_rescaled_norm00_znum%i.txt",workdir,index_out);
+    printf("Written file %s/PK_TABS/Pb_rescaled_norm00_znum%i.txt\n",workdir,index_out);
     FILE*outrescaledb = fopen(outfile,"w");
     for (i=0; i<knum; i++)
     {
@@ -125,8 +118,8 @@ void rescale_camb_ps(int knum, double *k)
     }
     fclose(outrescaledb);
 
-    sprintf(outfile,"%s/PK_TABS/Pc_%s_rescaled_norm00_znum%i.txt",dir_chain,outputfile,index_out);
-    printf("Written file PK_TABS/Pc_%s_rescaled_norm00_znum%i.txt\n",outputfile,index_out);
+    sprintf(outfile,"%s/PK_TABS/Pc_rescaled_norm00_znum%i.txt",workdir,index_out);
+    printf("Written file %s/PK_TABS/Pc_rescaled_norm00_znum%i.txt\n",workdir,index_out);
     FILE*outrescaledc = fopen(outfile,"w");
     for (i=0; i<knum; i++)
     {
@@ -134,8 +127,8 @@ void rescale_camb_ps(int knum, double *k)
     }
     fclose(outrescaledc);
 
-    sprintf(outfile,"%s/PK_TABS/Pn_%s_rescaled_norm00_znum%i.txt",dir_chain,outputfile,index_out);
-    printf("Written file PK_TABS/Pn_%s_rescaled_norm00_znum%i.txt\n",outputfile,index_out);
+    sprintf(outfile,"%s/PK_TABS/Pn_rescaled_norm00_znum%i.txt",workdir,index_out);
+    printf("Written file %s/PK_TABS/Pn_rescaled_norm00_znum%i.txt\n",workdir,index_out);
     FILE*outrescalednu = fopen(outfile,"w");
     for (i=0; i<knum; i++)
     {
@@ -143,8 +136,8 @@ void rescale_camb_ps(int knum, double *k)
     }
     fclose(outrescalednu);
 
-    sprintf(outfile,"%s/PK_TABS/Pm_%s_rescaled_norm00_znum%i.txt",dir_chain,outputfile,index_out);
-    printf("Written file PK_TABS/Pm_%s_rescaled_norm00_znum%i.txt\n",outputfile,index_out);
+    sprintf(outfile,"%s/PK_TABS/Pm_rescaled_norm00_znum%i.txt",workdir,index_out);
+    printf("Written file %s/PK_TABS/Pm_rescaled_norm00_znum%i.txt\n",workdir,index_out);
     FILE*outrescaledm = fopen(outfile,"w");
 
     for (i=0; i<knum; i++)
@@ -165,38 +158,31 @@ void rescale_class_ps(int knum, double *k)
 {
   printf("\nRescaling of the PS requested.\n");
 
-  char dir_chain[1000];
-  if (getcwd(dir_chain,sizeof(dir_chain))==NULL)
-  {
-    printf("\nError retrieving current directory path.\n");
-    exit(1);
-  }
-
-  create_boltzmann_ini_file(dir_chain);
+  create_boltzmann_ini_file();
 
   printf("\nCalling class and generating the P(K) and T(k) at the \n"
          "requested output redshifts.\n");
-  char command[200];
+  char command[512];
   if (strcmp(class_precision_file,"none")==0)
-    sprintf(command, "%sclass %s/PK_TABS/power.ini > boltzmann.log", boltzmann_folder, dir_chain);
+    sprintf(command, "%sclass %s/PK_TABS/power.ini > %s/boltzmann.log", boltzmann_folder, workdir, workdir);
   else
-    sprintf(command, "%sclass %s/PK_TABS/power.ini %s > boltzmann.log", boltzmann_folder, dir_chain, class_precision_file);
+    sprintf(command, "%sclass %s/PK_TABS/power.ini %s > %s/boltzmann.log", boltzmann_folder, workdir, class_precision_file, workdir);
   system(command);
 
   // power spectra at z=0,99 used for normalization
   mode = 3;
-  create_boltzmann_ini_file(dir_chain);
+  create_boltzmann_ini_file(workdir);
 
   if (strcmp(class_precision_file,"none")==0)
-    sprintf(command, "%sclass %s/PK_TABS/power_norm.ini > boltzmann.log", boltzmann_folder, dir_chain);
+    sprintf(command, "%sclass %s/PK_TABS/power_norm.ini > %s/boltzmann.log", boltzmann_folder, workdir, workdir);
   else
-    sprintf(command, "%sclass %s/PK_TABS/power_norm.ini %s > boltzmann.log", boltzmann_folder, dir_chain, class_precision_file);
+    sprintf(command, "%sclass %s/PK_TABS/power_norm.ini %s > %s/boltzmann.log", boltzmann_folder, workdir, class_precision_file, workdir);
   system(command);
   mode = 0;
 
   int n=0;
   /* LFT changed */
-  sprintf(command,"%s/PK_TABS/power_norm_00_z1_pk.dat",dir_chain);
+  sprintf(command,"%s/PK_TABS/power_norm_00_z1_pk.dat",workdir);
   n = count_lines(command);
   if ((n)!=knum)
   {
@@ -239,16 +225,16 @@ void rescale_class_ps(int knum, double *k)
   fclose(spectrumz0);
 
   int index_out=0;
-  char outfile[200];
-  char Dfile[200];
+  char outfile[512];
+  char Dfile[512];
   printf("\n");
   for(index_out=0; index_out<output_number; index_out++)
   {
-    sprintf(Dfile,"%s_znum%i.txt",outputfile,index_out);
+    sprintf(Dfile,"%s/znum%i.txt",workdir,index_out);
     read_D(Dfile,knum,Db,Dc,Dn,Dm);
 
-    sprintf(outfile,"%s/PK_TABS/Pb_%s_rescaled_norm00_znum%i.txt",dir_chain,outputfile,index_out);
-    printf("Written file PK_TABS/Pb_%s_rescaled_norm00_znum%i.txt\n",outputfile,index_out);
+    sprintf(outfile,"%s/PK_TABS/Pb_rescaled_norm00_znum%i.txt",workdir,index_out);
+    printf("Written file %s/PK_TABS/Pb_rescaled_norm00_znum%i.txt\n",workdir,index_out);
     FILE*outrescaledb = fopen(outfile,"w");
     for (i=0; i<knum; i++)
     {
@@ -256,8 +242,8 @@ void rescale_class_ps(int knum, double *k)
     }
     fclose(outrescaledb);
 
-    sprintf(outfile,"%s/PK_TABS/Pc_%s_rescaled_norm00_znum%i.txt",dir_chain,outputfile,index_out);
-    printf("Written file PK_TABS/Pc_%s_rescaled_norm00_znum%i.txt\n",outputfile,index_out);
+    sprintf(outfile,"%s/PK_TABS/Pc_rescaled_norm00_znum%i.txt",workdir,index_out);
+    printf("Written file %s/PK_TABS/Pc_rescaled_norm00_znum%i.txt\n",workdir,index_out);
     FILE*outrescaledc = fopen(outfile,"w");
     for (i=0; i<knum; i++)
     {
@@ -265,8 +251,8 @@ void rescale_class_ps(int knum, double *k)
     }
     fclose(outrescaledc);
 
-    sprintf(outfile,"%s/PK_TABS/Pn_%s_rescaled_norm00_znum%i.txt",dir_chain,outputfile,index_out);
-    printf("Written file PK_TABS/Pn_%s_rescaled_norm00_znum%i.txt\n",outputfile,index_out);
+    sprintf(outfile,"%s/PK_TABS/Pn_rescaled_norm00_znum%i.txt",workdir,index_out);
+    printf("Written file %s/PK_TABS/Pn_rescaled_norm00_znum%i.txt\n",workdir,index_out);
     FILE*outrescalednu = fopen(outfile,"w");
     for (i=0; i<knum; i++)
     {
@@ -274,8 +260,8 @@ void rescale_class_ps(int knum, double *k)
     }
     fclose(outrescalednu);
 
-    sprintf(outfile,"%s/PK_TABS/Pm_%s_rescaled_norm00_znum%i.txt",dir_chain,outputfile,index_out);
-    printf("Written file PK_TABS/Pm_%s_rescaled_norm00_znum%i.txt\n",outputfile,index_out);
+    sprintf(outfile,"%s/PK_TABS/Pm_rescaled_norm00_znum%i.txt",workdir,index_out);
+    printf("Written file %s/PK_TABS/Pm_rescaled_norm00_znum%i.txt\n",workdir,index_out);
     FILE*outrescaledm = fopen(outfile,"w");
 
     for (i=0; i<knum; i++)

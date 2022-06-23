@@ -128,8 +128,8 @@ double OX(double A, double E2)
 
 void print_hubble_table()
 {
-  char openf[200];
-  sprintf(openf,"%s_hubble.txt",outputfile);
+  char openf[512];
+  sprintf(openf,"%s/hubble.txt",workdir);
 
   printf("\nHubble table written to %s\n",openf);
 

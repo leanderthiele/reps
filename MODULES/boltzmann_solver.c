@@ -9,7 +9,7 @@
 #include "include_global.h"
 #include "background.h"
 
-void create_boltzmann_ini_file (char dir_chain[])
+void create_boltzmann_ini_file (void)
 {
   double bc_zz[50];
   if (mode==1)
@@ -28,21 +28,21 @@ void create_boltzmann_ini_file (char dir_chain[])
 
   if (strcmp(boltzmann_code,"camb")==0)
   {
-    char fileopen[200];
+    char fileopen[512];
 
     if (mode==0)
     {
-      printf("Creating %s input_file\n   %s/PK_TABS/power.ini\n",boltzmann_code,dir_chain);
-      sprintf(fileopen,"%s/PK_TABS/power.ini",dir_chain);
+      printf("Creating %s input_file\n   %s/PK_TABS/power.ini\n",boltzmann_code,workdir);
+      sprintf(fileopen,"%s/PK_TABS/power.ini",workdir);
     }
     if (mode==1 || mode==2)
     {
-      printf("Creating %s input_file\n   %s/BOUNDARY_CONDITIONS_MODULE/tabs/power.ini\n",boltzmann_code,dir_chain);
-      sprintf(fileopen,"%s/BOUNDARY_CONDITIONS_MODULE/tabs/power.ini",dir_chain);
+      printf("Creating %s input_file\n   %s/BOUNDARY_CONDITIONS_MODULE/tabs/power.ini\n",boltzmann_code,workdir);
+      sprintf(fileopen,"%s/BOUNDARY_CONDITIONS_MODULE/tabs/power.ini",workdir);
     }
     if (mode==3)
     {
-      sprintf(fileopen,"%s/PK_TABS/power_norm.ini",dir_chain);
+      sprintf(fileopen,"%s/PK_TABS/power_norm.ini",workdir);
     }
 
     double Nur,N_eigenstates,N_degeneracies;
@@ -60,7 +60,7 @@ void create_boltzmann_ini_file (char dir_chain[])
     }
 
     int i;
-    char command_mkdir[200];
+    char command_mkdir[512];
 
     FILE *out = fopen(fileopen,"w");
     if (out == NULL)
@@ -68,7 +68,7 @@ void create_boltzmann_ini_file (char dir_chain[])
       if (mode==0 || mode==3)
       {
         printf("Does the folder PK_TABS exist? Creating...\n");
-        sprintf(command_mkdir,"mkdir %s/PK_TABS",dir_chain);
+        sprintf(command_mkdir,"mkdir %s/PK_TABS",workdir);
         system(command_mkdir);
         out = fopen(fileopen,"w");
         if (out==NULL)
@@ -80,9 +80,9 @@ void create_boltzmann_ini_file (char dir_chain[])
       else
       {
         printf("Does the folder BOUNDARY_CONDITIONS_MODULE/tabs exist? Creating...\n");
-        sprintf(command_mkdir,"mkdir %s/BOUNDARY_CONDITIONS_MODULE",dir_chain);
+        sprintf(command_mkdir,"mkdir %s/BOUNDARY_CONDITIONS_MODULE",workdir);
         system(command_mkdir);
-        sprintf(command_mkdir,"mkdir %s/BOUNDARY_CONDITIONS_MODULE/tabs",dir_chain);
+        sprintf(command_mkdir,"mkdir %s/BOUNDARY_CONDITIONS_MODULE/tabs",workdir);
         system(command_mkdir);
         out = fopen(fileopen,"w");
         if (out==NULL)
@@ -95,10 +95,10 @@ void create_boltzmann_ini_file (char dir_chain[])
 
     int znum=0;
 
-    if (mode==0) {znum=output_number; fprintf(out,"output_root = %s/PK_TABS/power\n",dir_chain);}
-    if (mode==1) {znum=50; fprintf(out,"output_root = %s/BOUNDARY_CONDITIONS_MODULE/tabs/power\n",dir_chain);}
-    if (mode==2) {znum=1; fprintf(out,"output_root = %s/BOUNDARY_CONDITIONS_MODULE/tabs/power_zin\n",dir_chain);}
-    if (mode==3) {znum=2; fprintf(out,"output_root = %s/PK_TABS/power_norm\n",dir_chain);}
+    if (mode==0) {znum=output_number; fprintf(out,"output_root = %s/PK_TABS/power\n",workdir);}
+    if (mode==1) {znum=50; fprintf(out,"output_root = %s/BOUNDARY_CONDITIONS_MODULE/tabs/power\n",workdir);}
+    if (mode==2) {znum=1; fprintf(out,"output_root = %s/BOUNDARY_CONDITIONS_MODULE/tabs/power_zin\n",workdir);}
+    if (mode==3) {znum=2; fprintf(out,"output_root = %s/PK_TABS/power_norm\n",workdir);}
 
     fprintf(out,
     "get_scalar_cls = F \n"
@@ -274,21 +274,21 @@ void create_boltzmann_ini_file (char dir_chain[])
   }
   else
   {
-    char fileopen[200];
+    char fileopen[512];
 
     if (mode==0)
     {
-      printf("Creating %s input_file\n   %s/PK_TABS/power.ini\n",boltzmann_code,dir_chain);
-      sprintf(fileopen,"%s/PK_TABS/power.ini",dir_chain);
+      printf("Creating %s input_file\n   %s/PK_TABS/power.ini\n",boltzmann_code,workdir);
+      sprintf(fileopen,"%s/PK_TABS/power.ini",workdir);
     }
     if (mode==1 || mode==2)
     {
-      printf("Creating %s input_file\n   %s/BOUNDARY_CONDITIONS_MODULE/tabs/power.ini\n",boltzmann_code,dir_chain);
-      sprintf(fileopen,"%s/BOUNDARY_CONDITIONS_MODULE/tabs/power.ini",dir_chain);
+      printf("Creating %s input_file\n   %s/BOUNDARY_CONDITIONS_MODULE/tabs/power.ini\n",boltzmann_code,workdir);
+      sprintf(fileopen,"%s/BOUNDARY_CONDITIONS_MODULE/tabs/power.ini",workdir);
     }
     if (mode==3)
     {
-      sprintf(fileopen,"%s/PK_TABS/power_norm.ini",dir_chain);
+      sprintf(fileopen,"%s/PK_TABS/power_norm.ini",workdir);
     }
 
     double Nur;
@@ -296,7 +296,7 @@ void create_boltzmann_ini_file (char dir_chain[])
     else Nur = Neff;
 
     int i;
-    char command_mkdir[200];
+    char command_mkdir[512];
 
     FILE *out = fopen(fileopen,"w");
     if (out == NULL)
@@ -304,7 +304,7 @@ void create_boltzmann_ini_file (char dir_chain[])
       if (mode==0 || mode==3)
       {
         printf("Does the folder PK_TABS exist? Creating...\n");
-        sprintf(command_mkdir,"mkdir %s/PK_TABS",dir_chain);
+        sprintf(command_mkdir,"mkdir %s/PK_TABS",workdir);
         system(command_mkdir);
         out = fopen(fileopen,"w");
         if (out==NULL)
@@ -316,9 +316,9 @@ void create_boltzmann_ini_file (char dir_chain[])
       else
       {
         printf("Does the folder BOUNDARY_CONDITIONS_MODULE/tabs exist? Creating...\n");
-        sprintf(command_mkdir,"mkdir %s/BOUNDARY_CONDITIONS_MODULE",dir_chain);
+        sprintf(command_mkdir,"mkdir %s/BOUNDARY_CONDITIONS_MODULE",workdir);
         system(command_mkdir);
-        sprintf(command_mkdir,"mkdir %s/BOUNDARY_CONDITIONS_MODULE/tabs",dir_chain);
+        sprintf(command_mkdir,"mkdir %s/BOUNDARY_CONDITIONS_MODULE/tabs",workdir);
         system(command_mkdir);
         out = fopen(fileopen,"w");
         if (out==NULL)
@@ -518,10 +518,10 @@ void create_boltzmann_ini_file (char dir_chain[])
       "selection_bias = 1.                       \n"
       "                        \n");
 
-      if (mode==0) fprintf(out,"root = %s/PK_TABS/power_\n",dir_chain);
-      if (mode==1) fprintf(out,"root = %s/BOUNDARY_CONDITIONS_MODULE/tabs/power_\n",dir_chain);
-      if (mode==2) fprintf(out,"root = %s/BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_\n",dir_chain);
-      if (mode==3) fprintf(out,"root = %s/PK_TABS/power_norm_\n",dir_chain);
+      if (mode==0) fprintf(out,"root = %s/PK_TABS/power_\n",workdir);
+      if (mode==1) fprintf(out,"root = %s/BOUNDARY_CONDITIONS_MODULE/tabs/power_\n",workdir);
+      if (mode==2) fprintf(out,"root = %s/BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_\n",workdir);
+      if (mode==3) fprintf(out,"root = %s/PK_TABS/power_norm_\n",workdir);
 
       /* FIXME LFT
        * changed identifiers here to work with new CLASS,
@@ -576,10 +576,10 @@ void create_boltzmann_ini_file (char dir_chain[])
       {
         fprintf(out,"%.4lf, %.4lf\n",0.,z_initial);
       }
-      if (mode==0) fprintf(out,"root = %s/PK_TABS/power_\n",dir_chain);
-      if (mode==1) fprintf(out,"root = %s/BOUNDARY_CONDITIONS_MODULE/tabs/power_\n",dir_chain);
-      if (mode==2) fprintf(out,"root = %s/BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_\n",dir_chain);
-      if (mode==3) fprintf(out,"root = %s/PK_TABS/power_norm_\n",dir_chain);
+      if (mode==0) fprintf(out,"root = %s/PK_TABS/power_\n",workdir);
+      if (mode==1) fprintf(out,"root = %s/BOUNDARY_CONDITIONS_MODULE/tabs/power_\n",workdir);
+      if (mode==2) fprintf(out,"root = %s/BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_\n",workdir);
+      if (mode==3) fprintf(out,"root = %s/PK_TABS/power_norm_\n",workdir);
       fclose(out);
       char buf[1024];
       sprintf(buf, "cat %s >> %s", class_base_par_file, fileopen);

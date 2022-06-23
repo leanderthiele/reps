@@ -1,3 +1,3 @@
 /**   BOLTZMANN SOLVER ********************************************************/
-extern void create_boltzmann_ini_file (char dir_chain[]);
+extern void create_boltzmann_ini_file ();
 /******************************************************************************/

@@ -73,34 +73,27 @@ void BC()
   for (i=0; i<50; i++)
     bc_zz[i] = exp(xmin + i*bc_step) - 1.;
 
-  char dir_chain[1000];
-  if (getcwd(dir_chain,sizeof(dir_chain))==NULL)
-  {
-    frame("Error retrieving current directory path.\n");
-    exit(-1);
-  }
-
   mode=1;
-  create_boltzmann_ini_file(dir_chain);
+  create_boltzmann_ini_file();
   mode=0;
 
   printf("Calling %s and creating a tab of power spectra \n",boltzmann_code);
   printf("distributed around z=%lf...\n",z_initial);
 
-  char command[200];
+  char command[512];
   if ((strcmp(boltzmann_code,"class")==0) && (strcmp(class_precision_file,"none")!=0))
-    sprintf(command,"%s%s %s/BOUNDARY_CONDITIONS_MODULE/tabs/power.ini %s > boltzmann.log",
-                    boltzmann_folder,boltzmann_code,dir_chain,class_precision_file);
+    sprintf(command,"%s%s %s/BOUNDARY_CONDITIONS_MODULE/tabs/power.ini %s > %s/boltzmann.log",
+                    boltzmann_folder,boltzmann_code,workdir,class_precision_file,workdir);
   else
-    sprintf(command,"%s%s %s/BOUNDARY_CONDITIONS_MODULE/tabs/power.ini > boltzmann.log",
-                    boltzmann_folder,boltzmann_code,dir_chain);
+    sprintf(command,"%s%s %s/BOUNDARY_CONDITIONS_MODULE/tabs/power.ini > %s/boltzmann.log",
+                    boltzmann_folder,boltzmann_code,workdir,workdir);
   system(command);
 
-  char powfile[200];
-  char tfile[200];
+  char powfile[512];
+  char tfile[512];
 
   /* LFT changed */
-  sprintf(powfile,"BOUNDARY_CONDITIONS_MODULE/tabs/power_00_z1_pk.dat");
+  sprintf(powfile,"%s/BOUNDARY_CONDITIONS_MODULE/tabs/power_00_z1_pk.dat",workdir);
 
   int knum = count_lines(powfile);
   int header_lines = count_header_lines(powfile);
@@ -116,8 +109,8 @@ void BC()
   for (i=0; i<bc_nstep; i++)
   {
     /* LFT changed */
-    sprintf(powfile,"BOUNDARY_CONDITIONS_MODULE/tabs/power_00_z%i_pk.dat",i+1);
-    sprintf(tfile,"BOUNDARY_CONDITIONS_MODULE/tabs/power_00_z%i_tk.dat",i+1);
+    sprintf(powfile,"%s/BOUNDARY_CONDITIONS_MODULE/tabs/power_00_z%i_pk.dat",workdir,i+1);
+    sprintf(tfile,"%s/BOUNDARY_CONDITIONS_MODULE/tabs/power_00_z%i_tk.dat",workdir,i+1);
     read_ith_pk(bc_zz[i],knum,Pb[i],Pc[i],Pn[i],powfile,tfile);
   }
 
@@ -149,22 +142,24 @@ void BC()
   }
 
   mode=2;
-  create_boltzmann_ini_file(dir_chain);
+  create_boltzmann_ini_file();
   mode=0;
 
   printf("Calling %s for computing beta at z=%lf...\n",boltzmann_code,z_initial);
 
   if((strcmp(boltzmann_code,"class")==0) && (strcmp(class_precision_file,"none")!=0))
-    sprintf(command,"%s%s %s/BOUNDARY_CONDITIONS_MODULE/tabs/power.ini %s > boltzmann.log",
-                    boltzmann_folder,boltzmann_code,dir_chain,class_precision_file);
+    sprintf(command,"%s%s %s/BOUNDARY_CONDITIONS_MODULE/tabs/power.ini %s > %s/boltzmann.log",
+                    boltzmann_folder,boltzmann_code,workdir,class_precision_file,workdir);
   else
-    sprintf(command,"%s%s %s/BOUNDARY_CONDITIONS_MODULE/tabs/power.ini > boltzmann.log",
-                    boltzmann_folder,boltzmann_code,dir_chain);
+    sprintf(command,"%s%s %s/BOUNDARY_CONDITIONS_MODULE/tabs/power.ini > %s/boltzmann.log",
+                    boltzmann_folder,boltzmann_code,workdir,workdir);
   system(command);
 
   double PPb[knum],PPc[knum],PPn[knum];
   /* LFT changed */
-  read_ith_pk(99., knum, PPb, PPc, PPn, "./BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_00_pk.dat", "./BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_00_tk.dat");
+  sprintf(powfile,"%s/BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_00_pk.dat",workdir)
+  sprintf(tfile,"%s/BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_00_tk.dat",workdir)
+  read_ith_pk(99., knum, PPb, PPc, PPn, powfile, tfile);
 
   double beta_b[knum];
   double beta_n[knum];
@@ -173,7 +168,7 @@ void BC()
   for (i=0; i<knum; i++) beta_n[i]=sqrt(PPn[i]/PPc[i]);
 
   double A, OM99;
-  char outfinal_file[300];
+  char outfinal_file[512];
   sprintf(outfinal_file,"%s",boundaryconditionsfile);
   FILE *outfinal = fopen(outfinal_file,"w");
   if (outfinal==NULL)

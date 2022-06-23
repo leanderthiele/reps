@@ -30,7 +30,7 @@ extern void write_output(int knum, double *k,
       double **growth_b,double **growth_c,double **growth_n,double **growth_m);
 
 /**   BOLTZMANN SOLVER ********************************************************/
-extern void create_boltzmann_ini_file (char dir_chain[]);
+extern void create_boltzmann_ini_file ();
 
 /**  BACKGROUND FUNCTIONS *****************************************************/
 extern double func_1_3w(double A);

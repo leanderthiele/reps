@@ -328,7 +328,8 @@ void read_parameter_file(char parfile[])
 {
   if(read_int_from_file(parfile,"verb",&verb)!=1) verb=1;
 
-  if(read_string_from_file(parfile,"outputfile",outputfile)!=1) read_err("outputfile");
+  /* LFT removed this */
+  //if(read_string_from_file(parfile,"outputfile",outputfile)!=1) read_err("outputfile");
   if(read_string_from_file(parfile,"output_format",output_format)!=1) read_err("output_format");
   if(read_string_from_file(parfile,"boltzmann_code",boltzmann_code)!=1) read_err("boltzmann_code");
   if(read_string_from_file(parfile,"boltzmann_folder",boltzmann_folder)!=1) read_err("boltzmann_folder");
@@ -385,13 +386,13 @@ void read_parameter_file(char parfile[])
     }
     else
     {
-      sprintf(boundaryconditionsfile,"boundary_conditions.dat");
+      sprintf(boundaryconditionsfile,"%s/boundary_conditions.dat",workdir);
     }
   }
   else
   {
     use_boundary_conditions_from_file='F';
-    sprintf(boundaryconditionsfile,"boundary_conditions.dat");
+    sprintf(boundaryconditionsfile,"%s/boundary_conditions.dat",workdir);
   }
 
   read_output_redshifts(parfile);

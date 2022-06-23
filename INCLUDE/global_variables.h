@@ -3,7 +3,8 @@
 /******************************************************************************/
 char use_boundary_conditions_from_file;
 char boundaryconditionsfile[200];
-char outputfile[200];
+/* LFT removed this */
+//char outputfile[200];
 char output_format[200];
 char boltzmann_code[200];
 char boltzmann_folder[500];

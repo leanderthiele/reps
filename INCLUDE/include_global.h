@@ -1,6 +1,7 @@
 extern char use_boundary_conditions_from_file;
 extern char boundaryconditionsfile[200];
-extern char outputfile[200];
+/* LFT removed this */
+//extern char outputfile[200];
 extern char output_format[200];
 extern char boltzmann_code[200];
 extern char boltzmann_folder[500];

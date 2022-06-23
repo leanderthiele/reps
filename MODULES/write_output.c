@@ -552,32 +552,25 @@ void retrieve_Pm_z0(int knum,double *ktrue, double *k, double *P)
 {
   if (compute_Pk_0=='T')
   {
-    char dir_chain[1000];
-    if (getcwd(dir_chain,sizeof(dir_chain))==NULL)
-    {
-      frame("Error retrieving current directory path.\n");
-      exit(-1);
-    }
-
-    create_boltzmann_ini_file(dir_chain);
+    create_boltzmann_ini_file();
     printf("\nCalling %s and generating the P(K) and T(k) at the \n"
            "requested output redshifts.\n",boltzmann_code);
     char command[1000];
-    sprintf(command,"%s%s %s/PK_TABS/power.ini > boltzmann.log",
-          boltzmann_folder,boltzmann_code,dir_chain);
+    sprintf(command,"%s%s %s/PK_TABS/power.ini > %s/boltzmann.log",
+          boltzmann_folder,boltzmann_code,workdir,workdir);
     system(command);
 
     // power spectra at z=0,z_initial used for normalization
     mode = 3;
-    create_boltzmann_ini_file(dir_chain);
-    sprintf(command,"%s%s %s/PK_TABS/power_norm.ini > boltzmann.log",
-            boltzmann_folder,boltzmann_code,dir_chain);
+    create_boltzmann_ini_file(workdir);
+    sprintf(command,"%s%s %s/PK_TABS/power_norm.ini > %s/boltzmann.log",
+            boltzmann_folder,boltzmann_code,workdir,workdir);
     system(command);
     mode = 0;
 
     char filename[500];
     /* LFT changed */
-    sprintf(filename,"%s/PK_TABS/power_norm_00_z1_pk.dat",dir_chain);
+    sprintf(filename,"%s/PK_TABS/power_norm_00_z1_pk.dat",workdir);
     read_power_spectrum(filename,knum,k,P);
   }
   else
@@ -616,7 +609,7 @@ void write_output(int knum, double *k,
   {
     for (index_out=0; index_out<output_number; index_out++)
     {
-      sprintf(currentfile,"%s_rescaled_transfer_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/rescaled_transfer_z%.4lf.txt",workdir,z_output[index_out]);
       print_camblike_transfer(currentfile,knum,k,Delta_b[index_out],Delta_c[index_out],
                               Delta_n[index_out],Delta_m[index_out],growth_b[index_out],
                               growth_c[index_out],growth_n[index_out],
@@ -627,19 +620,19 @@ void write_output(int knum, double *k,
   {
     for (index_out=0; index_out<output_number; index_out++)
     {
-      sprintf(currentfile,"%s_rescaled_transfer_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/rescaled_transfer_z%.4lf.txt",workdir,z_output[index_out]);
       print_ngenic_old_transfer(currentfile,knum,k,Delta_b[index_out],Delta_c[index_out],
                               Delta_n[index_out],Delta_m[index_out],Pmz0);
-      sprintf(currentfile,"%s_Pm_rescaled_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/Pm_rescaled_z%.4lf.txt",workdir,z_output[index_out]);
       print_power_spectrum(currentfile,knum,k,Delta_m[index_out],Pmz0);
 
-      sprintf(currentfile,"%s_Pb_rescaled_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/Pb_rescaled_z%.4lf.txt",workdir,z_output[index_out]);
       print_power_spectrum(currentfile,knum,k,Delta_b[index_out],Pmz0);
 
-      sprintf(currentfile,"%s_Pc_rescaled_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/Pc_rescaled_z%.4lf.txt",workdir,z_output[index_out]);
       print_power_spectrum(currentfile,knum,k,Delta_c[index_out],Pmz0);
 
-      sprintf(currentfile,"%s_Pn_rescaled_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/Pn_rescaled_z%.4lf.txt",workdir,z_output[index_out]);
       print_power_spectrum(currentfile,knum,k,Delta_n[index_out],Pmz0);
 
       double Delta_cb[knum];
@@ -647,13 +640,13 @@ void write_output(int knum, double *k,
       for(i=0;i<knum; i++)
       Delta_cb[i] = (OB0/(OB0+OC0))*Delta_b[index_out][i] +
                     (OC0/(OB0+OC0))*Delta_c[index_out][i] ;
-      sprintf(currentfile,"%s_Pcb_rescaled_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/Pcb_rescaled_z%.4lf.txt",workdir,z_output[index_out]);
       print_power_spectrum(currentfile,knum,k,Delta_cb,Pmz0);
 
-      sprintf(currentfile,"%s_fb_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/fb_z%.4lf.txt",workdir,z_output[index_out]);
       print_growth_rate(currentfile,knum,k,growth_b[index_out]);
 
-      sprintf(currentfile,"%s_fc_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/fc_z%.4lf.txt",workdir,z_output[index_out]);
       print_growth_rate(currentfile,knum,k,growth_c[index_out]);
 
       double growth_cb[knum];
@@ -666,13 +659,13 @@ void write_output(int knum, double *k,
                        Delta_c_Delta_cb*(OC0/(OB0+OC0))*growth_c[index_out][i];
       }
 
-      sprintf(currentfile,"%s_fcb_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/fcb_z%.4lf.txt",workdir,z_output[index_out]);
       print_growth_rate(currentfile,knum,k,growth_cb);
 
-      sprintf(currentfile,"%s_fn_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/fn_z%.4lf.txt",workdir,z_output[index_out]);
       print_growth_rate(currentfile,knum,k,growth_n[index_out]);
 
-      sprintf(currentfile,"%s_fm_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/fm_z%.4lf.txt",workdir,z_output[index_out]);
       print_growth_rate(currentfile,knum,k,growth_m[index_out]);
     }
   }
@@ -680,20 +673,20 @@ void write_output(int knum, double *k,
   {
     for (index_out=0; index_out<output_number; index_out++)
     {
-      sprintf(currentfile,"%s_rescaled_transfer_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/rescaled_transfer_z%.4lf.txt",workdir,z_output[index_out]);
       print_ngenic_transfer(currentfile,knum,k,Delta_b[index_out],Delta_c[index_out],
                               Delta_n[index_out],Delta_m[index_out],Pmz0);
 
-      sprintf(currentfile,"%s_Pm_rescaled_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/Pm_rescaled_z%.4lf.txt",workdir,z_output[index_out]);
       print_power_spectrum(currentfile,knum,k,Delta_m[index_out],Pmz0);
 
-      sprintf(currentfile,"%s_Pb_rescaled_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/Pb_rescaled_z%.4lf.txt",workdir,z_output[index_out]);
       print_power_spectrum(currentfile,knum,k,Delta_b[index_out],Pmz0);
 
-      sprintf(currentfile,"%s_Pc_rescaled_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/Pc_rescaled_z%.4lf.txt",workdir,z_output[index_out]);
       print_power_spectrum(currentfile,knum,k,Delta_c[index_out],Pmz0);
 
-      sprintf(currentfile,"%s_Pn_rescaled_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/Pn_rescaled_z%.4lf.txt",workdir,z_output[index_out]);
       print_power_spectrum(currentfile,knum,k,Delta_n[index_out],Pmz0);
 
       double Delta_cb[knum];
@@ -701,13 +694,13 @@ void write_output(int knum, double *k,
       for(i=0;i<knum; i++)
       Delta_cb[i] = (OB0/(OB0+OC0))*Delta_b[index_out][i] +
                     (OC0/(OB0+OC0))*Delta_c[index_out][i] ;
-      sprintf(currentfile,"%s_Pcb_rescaled_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/Pcb_rescaled_z%.4lf.txt",workdir,z_output[index_out]);
       print_power_spectrum(currentfile,knum,k,Delta_cb,Pmz0);
 
-      sprintf(currentfile,"%s_fb_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/fb_z%.4lf.txt",workdir,z_output[index_out]);
       print_growth_rate(currentfile,knum,k,growth_b[index_out]);
 
-      sprintf(currentfile,"%s_fc_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/fc_z%.4lf.txt",workdir,z_output[index_out]);
       print_growth_rate(currentfile,knum,k,growth_c[index_out]);
 
       double growth_cb[knum];
@@ -720,13 +713,13 @@ void write_output(int knum, double *k,
                        Delta_c_Delta_cb*(OC0/(OB0+OC0))*growth_c[index_out][i];
       }
 
-      sprintf(currentfile,"%s_fcb_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/fcb_z%.4lf.txt",workdir,z_output[index_out]);
       print_growth_rate(currentfile,knum,k,growth_cb);
 
-      sprintf(currentfile,"%s_fn_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/fn_z%.4lf.txt",workdir,z_output[index_out]);
       print_growth_rate(currentfile,knum,k,growth_n[index_out]);
 
-      sprintf(currentfile,"%s_fm_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/fm_z%.4lf.txt",workdir,z_output[index_out]);
       print_growth_rate(currentfile,knum,k,growth_m[index_out]);
     }
   }
@@ -735,35 +728,35 @@ void write_output(int knum, double *k,
     for (index_out=0; index_out<output_number; index_out++)
     {
       int i;
-      sprintf(currentfile,"%s_Pb_rescaled_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/Pb_rescaled_z%.4lf.txt",workdir,z_output[index_out]);
       print_power_spectrum(currentfile,knum,k,Delta_b[index_out],Pmz0);
 
-      sprintf(currentfile,"%s_Pc_rescaled_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/Pc_rescaled_z%.4lf.txt",workdir,z_output[index_out]);
       print_power_spectrum(currentfile,knum,k,Delta_c[index_out],Pmz0);
 
-      sprintf(currentfile,"%s_Pn_rescaled_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/Pn_rescaled_z%.4lf.txt",workdir,z_output[index_out]);
       print_power_spectrum(currentfile,knum,k,Delta_n[index_out],Pmz0);
 
-      sprintf(currentfile,"%s_Pm_rescaled_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/Pm_rescaled_z%.4lf.txt",workdir,z_output[index_out]);
       print_power_spectrum(currentfile,knum,k,Delta_m[index_out],Pmz0);
 
       double Delta_cb[knum];
       for(i=0;i<knum; i++)
       Delta_cb[i] = (OB0/(OB0+OC0))*Delta_b[index_out][i] +
                      (OC0/(OB0+OC0))*Delta_c[index_out][i];
-      sprintf(currentfile,"%s_Pcb_rescaled_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/Pcb_rescaled_z%.4lf.txt",workdir,z_output[index_out]);
       print_power_spectrum(currentfile,knum,k,Delta_cb,Pmz0);
 
-      sprintf(currentfile,"%s_fb_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/fb_z%.4lf.txt",workdir,z_output[index_out]);
       print_growth_rate(currentfile,knum,k,growth_b[index_out]);
 
-      sprintf(currentfile,"%s_fc_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/fc_z%.4lf.txt",workdir,z_output[index_out]);
       print_growth_rate(currentfile,knum,k,growth_c[index_out]);
 
-      sprintf(currentfile,"%s_fn_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/fn_z%.4lf.txt",workdir,z_output[index_out]);
       print_growth_rate(currentfile,knum,k,growth_n[index_out]);
 
-      sprintf(currentfile,"%s_fm_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/fm_z%.4lf.txt",workdir,z_output[index_out]);
       print_growth_rate(currentfile,knum,k,growth_m[index_out]);
 
       double growth_cb[knum];
@@ -776,7 +769,7 @@ void write_output(int knum, double *k,
                        Delta_c_Delta_cb*(OC0/(OB0+OC0))*growth_c[index_out][i];
       }
 
-      sprintf(currentfile,"%s_fcb_z%.4lf.txt",outputfile,z_output[index_out]);
+      sprintf(currentfile,"%s/fcb_z%.4lf.txt",workdir,z_output[index_out]);
       print_growth_rate(currentfile,knum,k,growth_cb);
     }
   }
