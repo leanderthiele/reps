@@ -2,7 +2,7 @@
 /*    INITIAL SETTINGS - GLOBAL VARIABLES                                     */
 /******************************************************************************/
 char use_boundary_conditions_from_file;
-char boundaryconditionsfile[200];
+char boundaryconditionsfile[256];
 /* LFT removed this */
 //char outputfile[200];
 char output_format[200];
@@ -13,7 +13,7 @@ char class_precision_file[500];
 char class_base_par_file[500];
 
 /* LFT added -- this is where all the files go */
-char workdir[512];
+char workdir[256];
 
 int wrong_nu = 0;
 int wrong_ic = 0;

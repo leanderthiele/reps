@@ -157,8 +157,8 @@ void BC()
 
   double PPb[knum],PPc[knum],PPn[knum];
   /* LFT changed */
-  sprintf(powfile,"%s/BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_00_pk.dat",workdir)
-  sprintf(tfile,"%s/BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_00_tk.dat",workdir)
+  sprintf(powfile,"%s/BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_00_pk.dat",workdir);
+  sprintf(tfile,"%s/BOUNDARY_CONDITIONS_MODULE/tabs/power_zin_00_tk.dat",workdir);
   read_ith_pk(99., knum, PPb, PPc, PPn, powfile, tfile);
 
   double beta_b[knum];

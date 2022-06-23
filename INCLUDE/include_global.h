@@ -1,5 +1,5 @@
 extern char use_boundary_conditions_from_file;
-extern char boundaryconditionsfile[200];
+extern char boundaryconditionsfile[256];
 /* LFT removed this */
 //extern char outputfile[200];
 extern char output_format[200];
@@ -10,7 +10,7 @@ extern char class_precision_file[500];
 extern char class_base_par_file[500];
 
 /* LFT added -- this is where all the files go */
-extern char workdir[512];
+extern char workdir[256];
 
 extern int wrong_ic;
 extern int wrong_nu;
