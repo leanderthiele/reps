@@ -354,8 +354,10 @@ void read_parameter_file(char parfile[])
   if(read_double_from_file(parfile,"wa",&wa)!=1) read_err("wa");
   if(read_double_from_file(parfile,"kpivot",&kpivot)!=1) kpivot=0.05;
 
+  // LFT added this here so we can execute this code from elsewhere
+  //     The string macro INSTALL_DIR is defined in the Makefile
   if(read_string_from_file(parfile,"neutrino_tabulated_functions",neutrino_tab_file)!=1)
-    sprintf(neutrino_tab_file,"%s","tabulated_functions/FF_GG_func_tab.dat");
+    sprintf(neutrino_tab_file,"%s/%s",INSTALL_DIR,"tabulated_functions/FF_GG_func_tab.dat");
   if(read_string_from_file(parfile,"class_precision_file",class_precision_file)!=1)
     sprintf(class_precision_file,"%s","none");
   if(read_string_from_file(parfile,"class_base_par_file",class_base_par_file)!=1)

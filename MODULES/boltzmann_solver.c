@@ -362,7 +362,7 @@ void create_boltzmann_ini_file (void)
       fprintf(out,"\n");
       if(M_nu!=0)
       {
-        printf("deg_ncdm = 1");
+        fprintf(out,"deg_ncdm = 1");
         for(i=1;i<N_nu;i++) fprintf(out,", 1");
       }
       fprintf(out,"\n");

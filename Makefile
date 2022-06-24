@@ -6,7 +6,8 @@ OMPFLAGS=-fopenmp
 #OMPFLAGS=-openmp
 
 ## Other options
-CFLAGS=-lm -Wall
+# LFT added this here to find tabulated functions
+CFLAGS=-lm -Wall -DINSTALL_DIR=\"$(shell pwd)\"
 OFLAGS=-Ofast
 ADD_HEADERS=-I./INCLUDE
 
