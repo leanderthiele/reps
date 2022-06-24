@@ -218,8 +218,8 @@ void BC()
   fclose(outfinal);
 
   printf("Boundary conditions written in file %s\n",boundaryconditionsfile);
-  system("rm -rf BOUNDARY_CONDITIONS_MODULE/tabs");
-  system("rm -rf BOUNDARY_CONDITIONS_MODULE");
+  sprintf(command,"rm -r %s/BOUNDARY_CONDITIONS_MODULE",workdir);
+  system(command);
 
   deallocate_matrix(Pb,bc_nstep,knum);
   deallocate_matrix(Pc,bc_nstep,knum);
